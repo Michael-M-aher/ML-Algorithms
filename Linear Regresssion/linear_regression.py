@@ -8,15 +8,13 @@ class LinearRegression:
     -----------
     learning_rate: float
         The learning rate of the model.
+    regularization_param: float
+        The regularization parameter of the model.
     epochs: int
-        The number of epochs to train the model.
+        The number of iterations to train the the linear regression model.
 
     Attributes:
     -----------
-    learning_rate: float
-        The learning rate of the model.
-    epochs: int
-        The number of epochs to train the model.
     weights: ArrayLike
         The weights of the model.
     bias: float
@@ -36,7 +34,7 @@ class LinearRegression:
         This function computes the r2 score of the model.
     """
     
-    def __init__(self, learning_rate=0.01, epochs=1000):
+    def __init__(self, learning_rate=0.01, regularization_param=0, epochs=1000):
         """
         This function initializes the LinearRegression class.
 
@@ -44,8 +42,10 @@ class LinearRegression:
         -----------
         learning_rate: float
             The learning rate of the model.
+        regularization_param: float
+            The regularization parameter of the model.
         epochs: int
-            The number of epochs to train the model.
+            The number of iterations to train the the linear regression model.
 
         Returns:
         --------
@@ -53,6 +53,7 @@ class LinearRegression:
         """
         
         self.learning_rate = learning_rate
+        self.regularization_param = regularization_param
         self.epochs = epochs
         self.weights = None
         self.bias = None
@@ -95,14 +96,14 @@ class LinearRegression:
         None
         """
         
-        n_features = x.shape[1]
+        n_samples, n_features = x.shape
         y_pred = np.dot(x, self.weights) + self.bias
         err = y_pred - y
         dw = np.zeros(n_features) 
         for i in range(n_features):
             dw[i] = (err * x[:,i]).mean()
         db = err.mean()
-        self.weights -= self.learning_rate * dw
+        self.weights = self.weights*(1 - self.learning_rate*(self.regularization_param/n_samples)) - self.learning_rate * dw
         self.bias -= self.learning_rate * db
     
     def fit(self, x, y):
