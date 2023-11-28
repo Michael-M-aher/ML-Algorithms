@@ -7,8 +7,9 @@ class LogisticRegression:
     Parameters:
     -----------
     learning_rate: float
-        The step length that will be taken when following the negative gradient during
-        training.
+        The learning rate of the model.
+    regularization_param: float
+        The regularization parameter of the model.
     epochs: int
         The number of iterations to train the logistic regression model.
     threshold: float
@@ -34,15 +35,16 @@ class LogisticRegression:
 
     """
     
-    def __init__(self, learning_rate=0.01, epochs=10000, threshold=0.5):
+    def __init__(self, learning_rate=0.01, regularization_param=0, epochs=10000, threshold=0.5):
         """
         This function initializes the logistic regression model.
 
         Parameters:
         -----------
         learning_rate: float
-            The step length that will be taken when following the negative gradient during
-            training.
+            The learning rate of the model.
+        regularization_param: float
+            The regularization parameter of the model.
         epochs: int
             The number of iterations to train the logistic regression model.
         threshold: float
@@ -54,6 +56,7 @@ class LogisticRegression:
         """
 
         self.learning_rate = learning_rate
+        self.regularization_param = regularization_param
         self.epochs = epochs
         self.threshold = threshold
         self.weights = None
@@ -113,14 +116,14 @@ class LogisticRegression:
         None
         """
         
-        n_features = x.shape[1]
+        n_samples, n_features = x.shape
         y_pred = self._sigmoid(np.dot(x, self.weights) + self.bias) 
         err = y_pred - y
         dw = np.zeros(n_features) 
         for i in range(n_features):
             dw[i] = (err * x[:,i]).mean()
         db = err.mean()
-        self.weights -= self.learning_rate * dw
+        self.weights = self.weights*(1 - self.learning_rate*(self.regularization_param/n_samples)) - self.learning_rate * dw
         self.bias -= self.learning_rate * db
     
     def fit(self, x, y):
