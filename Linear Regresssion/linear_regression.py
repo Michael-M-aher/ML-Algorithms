@@ -78,7 +78,8 @@ class LinearRegression:
         n_samples = len(y)
         y_pred = np.dot(x, self.weights) + self.bias
         cost = (1 / (2 * n_samples)) * np.sum((y_pred - y) ** 2)
-        return cost
+        reg_cost = (self.regularization_param / (2 * n_samples)) * np.sum(self.weights ** 2)
+        return (cost+reg_cost)
     
     def _gradient_descent_linear(self, x, y):
         """
@@ -103,7 +104,7 @@ class LinearRegression:
         for i in range(n_features):
             dw[i] = (err * x[:,i]).mean()
         db = err.mean()
-        self.weights = self.weights*(1 - self.learning_rate*(self.regularization_param/n_samples)) - self.learning_rate * dw
+        self.weights = (1 - self.learning_rate*(self.regularization_param/n_samples)) * self.weights - self.learning_rate * dw
         self.bias -= self.learning_rate * db
     
     def fit(self, x, y):
