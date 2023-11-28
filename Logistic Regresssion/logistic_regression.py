@@ -96,9 +96,11 @@ class LogisticRegression:
             The cost function value.
         """
 
+        n_samples = len(y)
         y_pred = self._sigmoid(np.dot(x, self.weights) + self.bias)
         cost = (-y * np.log(y_pred) - (1 - y) * np.log(1 - y_pred)).mean()
-        return cost
+        reg_cost = (self.regularization_param / (2 * n_samples)) * np.sum(self.weights ** 2)
+        return (cost+reg_cost)
     
     def _gradient_descent_logistic(self, x, y):
         """
@@ -123,7 +125,7 @@ class LogisticRegression:
         for i in range(n_features):
             dw[i] = (err * x[:,i]).mean()
         db = err.mean()
-        self.weights = self.weights*(1 - self.learning_rate*(self.regularization_param/n_samples)) - self.learning_rate * dw
+        self.weights = (1 - self.learning_rate*(self.regularization_param/n_samples)) * self.weights - self.learning_rate * dw
         self.bias -= self.learning_rate * db
     
     def fit(self, x, y):
