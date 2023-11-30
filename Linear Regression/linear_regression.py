@@ -167,3 +167,27 @@ class LinearRegression:
             
         r2 = 1 - (np.sum((y_true - y_pred) ** 2) / np.sum((y_true - y_true.mean()) ** 2))
         return r2
+    
+    def mse(self, y_true, y_pred):
+        """
+        This function computes the mean squared error of the model.
+
+        Parameters:
+        -----------
+        y_true: ArrayLike
+            The input data of shape (m,1) where m is the number of samples.
+        y_pred: ArrayLike
+            The input data of shape (m,1) where m is the number of samples.
+
+        Returns:
+        --------
+        The mean squared error of the model.
+        """
+        
+        return np.mean((y_true - y_pred) ** 2)
+    
+    def __repr__(self) -> str:
+        return f'LinearRegression(learning_rate={self.learning_rate}, regularization_param={self.regularization_param}, epochs={self.epochs})'
+    
+    def __str__(self) -> str:
+        return self.__repr__()
