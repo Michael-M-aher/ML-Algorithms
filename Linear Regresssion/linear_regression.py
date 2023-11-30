@@ -120,7 +120,7 @@ class LinearRegression:
         
         Returns:
         --------
-        None
+        self
         """
 
         self.weights = np.zeros(x.shape[1])
@@ -131,6 +131,7 @@ class LinearRegression:
             cost = self.compute_cost(x, y)
             if(i % 1000 == 0):
                 print(f'epoch: {i}, cost: {cost}')
+        return self
     
     def predict(self, x):
         """
