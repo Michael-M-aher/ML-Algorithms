@@ -187,4 +187,10 @@ class LogisticRegression:
         The accuracy of the model.
         """
         
-        return np.sum(y_true == y_pred) / len(y_true)
+        return np.mean(y_true == y_pred)
+    
+    def __repr__(self) -> str:
+        return "LogisticRegression(learning_rate={}, regularization_param={}, epochs={}, threshold={})".format(self.learning_rate, self.regularization_param, self.epochs, self.threshold)
+    
+    def __str__(self) -> str:
+        return self.__repr__()
