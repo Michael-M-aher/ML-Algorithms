@@ -25,7 +25,9 @@ class KNN:
     predict(x)
         This function predicts the output of the model.
     accuracy(y_true, y_pred)
-        This function computes the accuracy accuracy of the model.
+        This function computes the accuracy of the model.
+    score(x, y)
+        This function computes the accuracy of the model.
     """
     def __init__(self, k=5, type='classification'):
         """
