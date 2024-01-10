@@ -8,8 +8,10 @@ class LinearRegression:
     -----------
     learning_rate: float
         The learning rate of the model.
+
     regularization_param: float
         The regularization parameter of the model.
+
     epochs: int
         The number of iterations to train the the linear regression model.
 
@@ -17,6 +19,7 @@ class LinearRegression:
     -----------
     weights: ArrayLike
         The weights of the model.
+
     bias: float
         The bias of the model.
 
@@ -24,12 +27,13 @@ class LinearRegression:
     --------
     compute_cost(x, y)
         This function computes the cost of the model.
-    _gradient_descent_linear(x, y)
-        This function performs the gradient descent algorithm.
+
     fit(x, y)
         This function fits the model to the data.
+
     predict(x)
         This function predicts the output of the model.
+
     r2_score(y_true, y_pred)
         This function computes the r2 score of the model.
     """
@@ -42,8 +46,10 @@ class LinearRegression:
         -----------
         learning_rate: float
             The learning rate of the model.
+
         regularization_param: float
             The regularization parameter of the model.
+
         epochs: int
             The number of iterations to train the the linear regression model.
 
@@ -67,6 +73,7 @@ class LinearRegression:
         -----------
         x: MatrixLike | ArrayLike,
             The input data of shape (m,n) where m is the number of samples and n is the number of features.
+
         y: ArrayLike
             The input data of shape (m,1) where m is the number of samples.
         
@@ -89,6 +96,7 @@ class LinearRegression:
         -----------
         x: MatrixLike | ArrayLike,
             The input data of shape (m,n) where m is the number of samples and n is the number of features.
+
         y: ArrayLike
             The input data of shape (m,1) where m is the number of samples.
 
@@ -115,6 +123,7 @@ class LinearRegression:
         -----------
         x: MatrixLike | ArrayLike,
             The input data of shape (m,n) where m is the number of samples and n is the number of features.
+
         y: ArrayLike
             The input data of shape (m,1) where m is the number of samples.
         
@@ -157,6 +166,7 @@ class LinearRegression:
         -----------
         y_true: ArrayLike
             The input data of shape (m,1) where m is the number of samples.
+
         y_pred: ArrayLike
             The input data of shape (m,1) where m is the number of samples.
 
@@ -176,6 +186,7 @@ class LinearRegression:
         -----------
         y_true: ArrayLike
             The input data of shape (m,1) where m is the number of samples.
+            
         y_pred: ArrayLike
             The input data of shape (m,1) where m is the number of samples.
 
