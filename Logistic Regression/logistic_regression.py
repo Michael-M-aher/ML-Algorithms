@@ -8,10 +8,13 @@ class LogisticRegression:
     -----------
     learning_rate: float
         The learning rate of the model.
+        
     regularization_param: float
         The regularization parameter of the model.
+
     epochs: int
         The number of iterations to train the logistic regression model.
+
     threshold: float
         The decision threshold that separates the two classes 0 and 1.
 
@@ -19,6 +22,7 @@ class LogisticRegression:
     -----------
     weights: ArrayLike
         The weights vector of the logistic regression model.
+
     bias: float
         The bias term of the logistic regression model.
     
@@ -26,10 +30,13 @@ class LogisticRegression:
     --------
     fit(x, y)
         This function performs the gradient descent algorithm.
+        
     predict(x)
         This function predicts the class labels.
+
     compute_cost(x, y)
         This function calculates the cost function.
+
     accuracy(y_true, y_pred)
         This function calculates the accuracy of the model.
 
@@ -43,10 +50,13 @@ class LogisticRegression:
         -----------
         learning_rate: float
             The learning rate of the model.
+
         regularization_param: float
             The regularization parameter of the model.
+
         epochs: int
             The number of iterations to train the logistic regression model.
+
         threshold: float
             The decision threshold that separates the two classes 0 and 1.
         
@@ -87,6 +97,7 @@ class LogisticRegression:
         -----------
         x: MatrixLike | ArrayLike,
             The input data of shape (m,n) where m is the number of samples and n is the number of features.
+
         y: ArrayLike
             The input data of shape (m,1) where m is the number of samples.
         
@@ -110,6 +121,7 @@ class LogisticRegression:
         -----------
         x: MatrixLike | ArrayLike,
             The input data of shape (m,n) where m is the number of samples and n is the number of features.
+
         y: ArrayLike
             The input data of shape (m,1) where m is the number of samples.
         
@@ -136,6 +148,7 @@ class LogisticRegression:
         -----------
         x: MatrixLike | ArrayLike,
             The input data of shape (m,n) where m is the number of samples and n is the number of features.
+
         y: ArrayLike
             The input data of shape (m,1) where m is the number of samples.
 
@@ -179,6 +192,7 @@ class LogisticRegression:
         -----------
         y_true: ArrayLike
             The input data of shape (m,1) where m is the number of samples.
+
         y_pred: ArrayLike
             The input data of shape (m,1) where m is the number of samples.
 
