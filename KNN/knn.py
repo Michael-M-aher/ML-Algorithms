@@ -8,6 +8,7 @@ class KNN:
     -----------
     k: int
         The number of nearest neighbors.
+
     type: str
         The type of the model. It can be either 'classification' or 'regression'.
     
@@ -15,6 +16,7 @@ class KNN:
     -----------
     x: ArrayLike
         The features of the model.
+
     y: ArrayLike
         The labels of the model.
 
@@ -22,10 +24,13 @@ class KNN:
     --------
     fit(x, y)
         This function fits the model to the data.
+
     predict(x)
         This function predicts the output of the model.
+
     accuracy(y_true, y_pred)
         This function computes the accuracy of the model.
+
     score(x, y)
         This function computes the accuracy of the model.
     """
@@ -37,6 +42,7 @@ class KNN:
         -----------
         k: int
             The number of nearest neighbors.
+
         type: str
             The type of the model. It can be either 'classification' or 'regression'.
 
@@ -53,14 +59,17 @@ class KNN:
         """
         Fit KNN classifier
 
-        Parameters
-        ----------
+        Parameters:
+        -----------
         x: array-like, shape (n_samples, n_features)
-        y: array-like, shape (n_samples, )
+            The training input samples.
 
-        Returns
-        -------
-        self
+        y: array-like, shape (n_samples, )
+            The target values.
+
+        Returns:
+        --------
+        self: object
         """
         self.x = x
         self.y = y
@@ -70,13 +79,15 @@ class KNN:
         """
         Predict class labels for samples in x using a majority vote.
 
-        Parameters
-        ----------
+        Parameters:
+        -----------
         x: array-like, shape (n_samples, n_features)
+            The training input samples.
 
-        Returns
-        -------
+        Returns:
+        --------
         y_pred: array-like, shape (n_samples, )
+            The target values.
         """
 
         y_pred = np.empty(x.shape[0], dtype=self.y.dtype)
@@ -94,10 +105,12 @@ class KNN:
         Parameters
         ----------
         x: array-like, shape (n_samples, n_features)
+            The training input samples.
 
         Returns
         -------
         y_pred: array-like, shape (n_samples, )
+            The target values.
         """
         y_pred = np.empty(x.shape[0])
         for i in range(x.shape[0]):
@@ -114,10 +127,13 @@ class KNN:
         Parameters
         ----------
         x: array-like, shape (n_samples, n_features)
+            The training input samples.
+
 
         Returns
         -------
         y: array-like, shape (n_samples, )
+            The target values.
         """
         if self.type == 'classification':
             return self._predict_classification(x)
@@ -134,6 +150,7 @@ class KNN:
         -----------
         y_true: ArrayLike
             The input data of shape (m,1) where m is the number of samples.
+
         y_pred: ArrayLike
             The input data of shape (m,1) where m is the number of samples.
 
@@ -151,6 +168,7 @@ class KNN:
         -----------
         y_true: ArrayLike
             The input data of shape (m,1) where m is the number of samples.
+
         y_pred: ArrayLike
             The input data of shape (m,1) where m is the number of samples.
 
@@ -169,6 +187,7 @@ class KNN:
         -----------
         y_true: ArrayLike
             The input data of shape (m,1) where m is the number of samples.
+
         y_pred: ArrayLike
             The input data of shape (m,1) where m is the number of samples.
 
@@ -191,6 +210,7 @@ class KNN:
         -----------
         x: ArrayLike
             The input data of shape (m,n) where m is the number of samples and n is the number of features.
+            
         y: ArrayLike
             The input data of shape (m,1) where m is the number of samples.
 
