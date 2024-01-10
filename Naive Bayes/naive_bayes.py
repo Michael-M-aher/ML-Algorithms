@@ -156,6 +156,7 @@ class GBNaiveBayes:
         -----------
         x: ArrayLike
             The input data of shape (m,n) where m is the number of samples and n is the number of features.
+            
         y: ArrayLike
             The input data of shape (m,1) where m is the number of samples.
 
