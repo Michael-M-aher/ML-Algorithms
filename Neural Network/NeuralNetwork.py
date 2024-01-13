@@ -72,15 +72,12 @@ class Neuron:
         self.output = self.activation(total) if self.activation else total
         return self.output
     
-    def _backpropagation(self, output_error, next_layer, idx):
+    def _backpropagation(self, next_layer, idx):
         '''
         Backpropagate the error to the previous layer
 
         Parameters:
         ----------
-        output_error: float
-            The error of the output layer
-
         next_layer: Layer
             The next layer of the neuron
 
@@ -92,10 +89,11 @@ class Neuron:
         error: float
             The error of the neuron
         '''
-        mul1 = 0
+        err = 0
         for neuron in next_layer.neurons:
-            mul1 += neuron.weights[idx] * output_error
-        return mul1 * self.output * (1 - self.output)
+            err += neuron.error*neuron.weights[idx]
+        self.error = err * self.output * (1 - self.output)
+        return self.error
 
     
 class Layer:
@@ -171,17 +169,15 @@ class Layer:
         outputs = []
         for neuron in self.neurons:
             outputs.append(neuron._feed_forward(inputs))
-        return np.array(outputs)
+        self.output = np.array(outputs)
+        return self.output
     
-    def _backpropagation(self, output_error, next_layer):
+    def _backpropagation(self, next_layer):
         '''
         Backpropagate the error to the previous layer
 
         Parameters:
         ----------
-        output_error: float
-            The error of the output layer
-
         next_layer: Layer
             The next layer of the neuron
 
@@ -190,8 +186,7 @@ class Layer:
         None
         '''
         for i in range(len(self.neurons)):
-            error = self.neurons[i]._backpropagation(output_error, next_layer, i)
-            self.neurons[i].error = error
+            self.neurons[i]._backpropagation(next_layer, i)
     
     def _update_weights(self, learning_rate, x):
         '''
@@ -226,7 +221,7 @@ class Layer:
         None
         '''
         for neuron in self.neurons:
-            neuron.bias -= learning_rate * neuron.error[0]
+            neuron.bias -= learning_rate * neuron.error
     
     def __str__(self):
         return f'Layer ({self.input_size}, {self.output_size}) with %d neurons' % len(self.neurons)
@@ -286,7 +281,7 @@ class InputLayer(Layer):
         '''
         super().__init__(input_size, input_size)
     
-    def feed_forward(self, inputs):
+    def _feed_forward(self, inputs):
         '''
         Feed forward the input to the layer
 
@@ -337,7 +332,7 @@ class NeuralNetwork:
     predict(input)
         predict the output of the network
 
-    calculate_accuracy(y_pred, y_test)
+    calculate_accuracy(y_pred, target)
         calculate the accuracy of the network
 
     evaluate(input, target)
@@ -413,6 +408,7 @@ class NeuralNetwork:
             The output of the network
         '''
         output = input
+        self.input_layer.output = output
         for layer in self.layers:
             output = layer._feed_forward(output)
             layer.output = output
@@ -420,23 +416,54 @@ class NeuralNetwork:
         return output
     
     
-    def _backward(self, output_error):
+    def _backward(self, y_true):
         '''
         Backpropagate the error to the previous layer
 
         Parameters:
         ----------
-        output_error: float
-            The error of the output layer
+        y_true: numpy array
+            The target output
 
         Returns:
         --------
         None
         '''
         next_layer = self.output_layer
+        output = self.output_layer.output
+
+        # backpropagate the output layer
+        for i,neuron in enumerate(self.output_layer.neurons):
+            neuron.error = _mse_derivative(y_true[i], output[i]) * (_sigmoid_derivative(output[i]) if (self.output_layer.activation == sigmoid) else 1)
+
+        # backpropagate the hidden layers
         for layer in reversed(self.layers):
-            layer._backpropagation(output_error, next_layer)
+            layer._backpropagation(next_layer)
             next_layer = layer
+    
+    def _update_weights(self, learning_rate, x):
+        '''
+        Update the weights of the network
+
+        Parameters:
+        ----------
+        learning_rate: float
+            Learning rate of the network
+
+        x: numpy array
+            Input to the network
+
+        Returns:
+        --------
+        None
+        '''
+        a = x
+        for layer in self.layers:
+            layer._update_weights(learning_rate, a)
+            layer._update_bias(learning_rate)
+            a = layer.output
+        self.output_layer._update_weights(learning_rate, a)
+        self.output_layer._update_bias(learning_rate)
 
     def _mse(self, y_true, y_pred):
         '''
@@ -456,25 +483,6 @@ class NeuralNetwork:
             mean squared error
         '''
         return np.square(np.subtract(y_true, y_pred)).mean()
-
-    def _mse_derivative(self, y_true, y_pred):
-        '''
-        Calculate the derivative of the mean squared error
-
-        Parameters:
-        ----------
-        y_true : numpy array
-            true output
-
-        y_pred : numpy array
-            predicted output
-
-        Returns:
-        --------
-        error : float
-            derivative of the mean squared error
-        '''
-        return (y_pred - y_true) * y_pred * (1 - y_pred)
     
     def fit(self, input, target, epochs, learning_rate):
         '''
@@ -482,10 +490,10 @@ class NeuralNetwork:
 
         Parameters:
         ----------
-        input : numpy array
+        input : 2d numpy array
             The input to the network
 
-        target : numpy array
+        target : 2d numpy array
             The target output
 
         epochs : int
@@ -498,20 +506,16 @@ class NeuralNetwork:
         --------
         None
         '''
+        if(target.shape[1] != self.output_layer.output_size):
+            print('Error: Output size of the network does not match the target output size')
+            return
         for epoch in range(epochs):
             error = 0
             for x, y in zip(input, target):
-                self.input_layer.output = x
                 output = self._forward(x)
                 error += self._mse(y, output)
-                output_error = self._mse_derivative(y, output)if (self.output_layer.activation == sigmoid) else (output-y)
-                self.output_layer.neurons[0].error = output_error[0]
-                self._backward(output_error)
-                a = x
-                for layer in self.layers:
-                    layer._update_weights(learning_rate, a)
-                    layer._update_bias(learning_rate)
-                    a = layer.output
+                self._backward(y)
+                self._update_weights(learning_rate, x)
             error /= len(input)
             print('Epoch: %d/%d, Error: %f' % (epoch+1, epochs, error))
     
@@ -597,7 +601,41 @@ class NeuralNetwork:
     
     def __repr__(self):
         return self.__str__()
-    
+
+def _mse_derivative(y_true, y_pred):
+    '''
+    Calculate the derivative of the mean squared error
+
+    Parameters:
+    ----------
+    y_true : numpy array
+        true output
+
+    y_pred : numpy array
+        predicted output
+
+    Returns:
+    --------
+    error : float
+        derivative of the mean squared error
+    '''
+    return (y_pred - y_true)
+
+def _sigmoid_derivative(x):
+    '''
+    Calculate the derivative of the sigmoid function
+
+    Parameters:
+    ----------
+    x : float
+        input to the sigmoid function
+
+    Returns:
+    --------
+    x : float
+        derivative of the sigmoid function
+    '''
+    return x * (1 - x)
 
 
 def sigmoid(x):
