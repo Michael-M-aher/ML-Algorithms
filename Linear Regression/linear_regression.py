@@ -140,7 +140,7 @@ class LinearRegression:
             self._gradient_descent_linear(x, y)
             cost = self.compute_cost(x, y)
             cost_graph.append(cost)
-            if(i % 50 == 0):
+            if(i % 100 == 0):
                 print(f'epoch: {i}, cost: {cost}')
         return cost_graph
     
