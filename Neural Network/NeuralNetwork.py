@@ -323,7 +323,10 @@ class NeuralNetwork:
 
     output_layer: Layer
         Output layer of the network
-
+    
+    losses: list
+        List of losses of the network
+    
     Methods:
     --------
     fit(input, target, epochs, learning_rate)
@@ -358,6 +361,7 @@ class NeuralNetwork:
         self.layers = layers[1:-1]
         self.input_layer = layers[0]
         self.output_layer = layers[-1]
+        self.losses = []
     
     def _init_layers(self,layers):
         '''
@@ -509,6 +513,7 @@ class NeuralNetwork:
         if(target.shape[1] != self.output_layer.output_size):
             print('Error: Output size of the network does not match the target output size')
             return
+        self.losses = []
         for epoch in range(epochs):
             error = 0
             for x, y in zip(input, target):
@@ -517,6 +522,7 @@ class NeuralNetwork:
                 self._backward(y)
                 self._update_weights(learning_rate, x)
             error /= len(input)
+            self.losses.append(error)
             print('Epoch: %d/%d, Error: %f' % (epoch+1, epochs, error))
     
     def predict(self, input):
