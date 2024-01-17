@@ -160,10 +160,10 @@ class LogisticRegression:
         self.weights = np.zeros(x.shape[1])
         self.bias = 0
         x = np.array(x)
-        for i in range(self.epochs):
+        for i in range(self.epochs+1):
             self._gradient_descent_logistic(x, y)
             cost = self.compute_cost(x, y)
-            if(i % 1000 == 0):
+            if(i % 100 == 0):
                 print(f'epoch: {i}, cost: {cost}')
         return self
     
