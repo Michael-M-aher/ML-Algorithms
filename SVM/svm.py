@@ -84,12 +84,11 @@ class SVM:
         --------
         None
         """
-        y_transformed = np.where(y <= 0, -1, 1)
         self.weights = np.zeros(x.shape[1])
         self.bias = 0
 
         for _ in range(self.num_iterations):
-            for xi, yi in zip(x, y_transformed):
+            for xi, yi in zip(x, y):
                 is_correct_classification = yi * (np.dot(xi, self.weights) - self.bias) >= 1
                 self.weights -= self.learning_rate * (2 * self.regularization_param * self.weights) if is_correct_classification else self.learning_rate * (2 * self.regularization_param * self.weights - np.dot(xi, yi))
                 self.bias -= self.learning_rate * yi if not is_correct_classification else 0
