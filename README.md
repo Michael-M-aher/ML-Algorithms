@@ -6,13 +6,13 @@
 
 This project focuses on implementing various machine learning models in Python, covering a range of algorithms for classification and regression tasks. The implemented models include:
 
-- [K-Means Clustering](https://github.com/Michael-M-aher/ML-Algorithms/blob/main/K-Means)
-- [K-Nearest Neighbors (KNN)](https://github.com/Michael-M-aher/ML-Algorithms/blob/main/KNN)
-- [Linear Regression](https://github.com/Michael-M-aher/ML-Algorithms/blob/main/Linear%20Regression)
-- [Logistic Regression](https://github.com/Michael-M-aher/ML-Algorithms/blob/main/Logistic%20Regression)
-- [Naive Bayes](https://github.com/Michael-M-aher/ML-Algorithms/blob/main/Naive%20Bayes)
-- [Neural Network](https://github.com/Michael-M-aher/ML-Algorithms/blob/main/Neural%20Network)
-- [Support Vector Machine (SVM)](https://github.com/Michael-M-aher/ML-Algorithms/blob/main/SVM)
+- [K-Means Clustering](https://github.com/Michael-M-aher/ML-Algorithms/blob/main/K-Means/notebook.ipynb)
+- [K-Nearest Neighbors (KNN)](https://github.com/Michael-M-aher/ML-Algorithms/blob/main/KNN/notebook.ipynb)
+- [Linear Regression](https://github.com/Michael-M-aher/ML-Algorithms/blob/main/Linear%20Regression/notebook.ipynb)
+- [Logistic Regression](https://github.com/Michael-M-aher/ML-Algorithms/blob/main/Logistic%20Regression/notebook.ipynb)
+- [Naive Bayes](https://github.com/Michael-M-aher/ML-Algorithms/blob/main/Naive%20Bayes/notebook.ipynb)
+- [Neural Network](https://github.com/Michael-M-aher/ML-Algorithms/blob/main/Neural%20Network/notebook.ipynb)
+- [Support Vector Machine (SVM)](https://github.com/Michael-M-aher/ML-Algorithms/blob/main/SVM/notebook.ipynb)
 
 ## Installation
 
