@@ -11,39 +11,38 @@ class SVM:
         The step length that will be taken when following the negative gradient during
         training.
 
-    lambda_param: float
+    regularization_param: float
         Regularization parameter for the SVM.
         
-    n_iters: int
+    num_iterations: int
         The number of iterations that the classifier will train over the dataset.
 
     Attributes:
     -----------
-    w: 1d-array
+    weights: 1d-array
         The weights after fitting. This is a 1d array of shape (n_features,).
 
-    b: float
+    bias: float
         The bias after fitting. If fit_intercept = False, the bias will be set to zero.
 
     Methods:
     --------
-    fit(X, y): void
+    fit(x, y): void
         Fit the model according to the given training data.
 
-    predict(X): 1d-array
-        Predict class labels for samples in X.
+    predict(x): 1d-array
+        Predict class y for samples in x.
 
     accuracy(y_true, y_pred): float
-        Returns the mean accuracy on the given test data and labels.
+        Returns the mean accuracy on the given test data and y.
 
-    score(X, y): float
-        Returns the mean accuracy on the given test data and labels.
+    score(x, y): float
+        Returns the mean accuracy on the given test data and y.
 
-    plot(X, y): void
+    plot_decision_boundary(x, y): void
         Plot the decision boundary.
     """
-
-    def __init__(self, learning_rate=0.001, lambda_param=0.01, n_iters=1000):
+    def __init__(self, learning_rate=0.001, regularization_param=0.01, num_iterations=1000):
         """
         Initialize the SVM classifier.
 
@@ -53,21 +52,21 @@ class SVM:
             The step length that will be taken when following the negative gradient during
             training.
 
-        lambda_param: float
+        regularization_param: float
             Regularization parameter for the SVM.
 
-        n_iters: int
+        num_iterations: int
             The number of iterations that the classifier will train over the dataset.
 
         Returns:
         --------
         None
         """
-        self.lr = learning_rate
-        self.lambda_param = lambda_param
-        self.n_iters = n_iters
-        self.w = None
-        self.b = None
+        self.learning_rate = learning_rate
+        self.regularization_param = regularization_param
+        self.num_iterations = num_iterations
+        self.weights = None
+        self.bias = None
 
     def fit(self, x, y):
         """
@@ -85,25 +84,19 @@ class SVM:
         --------
         None
         """
-        n_features = x.shape[1]
-        y_ = np.where(y <= 0, -1, 1)
+        y_transformed = np.where(y <= 0, -1, 1)
+        self.weights = np.zeros(x.shape[1])
+        self.bias = 0
 
-        self.w = np.zeros(n_features)
-        self.b = 0
-
-        for _ in range(self.n_iters):
-            for idx, x_i in enumerate(x):
-                condition = y_[idx] * (np.dot(x_i, self.w) - self.b) >= 1
-                if condition:
-                    self.w -= self.lr * (2 * self.lambda_param * self.w)
-                else:
-                    self.w -= self.lr * \
-                        (2 * self.lambda_param * self.w - np.dot(x_i, y_[idx]))
-                    self.b -= self.lr * y_[idx]
+        for _ in range(self.num_iterations):
+            for xi, yi in zip(x, y_transformed):
+                is_correct_classification = yi * (np.dot(xi, self.weights) - self.bias) >= 1
+                self.weights -= self.learning_rate * (2 * self.regularization_param * self.weights) if is_correct_classification else self.learning_rate * (2 * self.regularization_param * self.weights - np.dot(xi, yi))
+                self.bias -= self.learning_rate * yi if not is_correct_classification else 0
 
     def predict(self, x):
         """
-        Predict class labels for samples in X.
+        Predict class y for samples in x.
 
         Parameters:
         -----------
@@ -113,12 +106,12 @@ class SVM:
         Returns:
         --------
         predictions: 1d-array, shape=(n_samples,)
-            The predicted class labels.
+            The predicted class y.
         """
-        approx = np.dot(x, self.w) - self.b
-        return np.sign(approx)
-    
-    def plot(self, x, y):
+        approximations = np.dot(x, self.weights) - self.bias
+        return np.sign(approximations)
+
+    def plot_decision_boundary(self, x, y):
         """
         Plot the decision boundary.
 
@@ -137,43 +130,34 @@ class SVM:
         def get_hyperplane_value(x, w, b, offset):
             return (-w[0] * x + b + offset) / w[1]
 
-        fig = plt.figure()
-        ax = fig.add_subplot(1, 1, 1)
-        plt.scatter(x[:, 0], x[:, 1], marker='o', c=y)
+        _, ax = plt.subplots()
+        ax.scatter(x[:, 0], x[:, 1], marker='o', c=y)
 
-        x0_1 = np.amin(x[:, 0])
-        x0_2 = np.amax(x[:, 0])
+        x_min, x_max = np.amin(x[:, 0]), np.amax(x[:, 0])
+        x1_min, x1_max = get_hyperplane_value(x_min, self.weights, self.bias, 0), get_hyperplane_value(x_max, self.weights, self.bias, 0)
+        x1_min_m, x1_max_m = get_hyperplane_value(x_min, self.weights, self.bias, -1), get_hyperplane_value(x_max, self.weights, self.bias, -1)
+        x1_min_p, x1_max_p = get_hyperplane_value(x_min, self.weights, self.bias, 1), get_hyperplane_value(x_max, self.weights, self.bias, 1)
 
-        x1_1 = get_hyperplane_value(x0_1, self.w, self.b, 0)
-        x1_2 = get_hyperplane_value(x0_2, self.w, self.b, 0)
+        ax.plot([x_min, x_max], [x1_min, x1_max], 'y--')
+        ax.plot([x_min, x_max], [x1_min_m, x1_max_m], 'k')
+        ax.plot([x_min, x_max], [x1_min_p, x1_max_p], 'k')
 
-        x1_1_m = get_hyperplane_value(x0_1, self.w, self.b, -1)
-        x1_2_m = get_hyperplane_value(x0_2, self.w, self.b, -1)
-
-        x1_1_p = get_hyperplane_value(x0_1, self.w, self.b, 1)
-        x1_2_p = get_hyperplane_value(x0_2, self.w, self.b, 1)
-
-        ax.plot([x0_1, x0_2], [x1_1, x1_2], 'y--')
-        ax.plot([x0_1, x0_2], [x1_1_m, x1_2_m], 'k')
-        ax.plot([x0_1, x0_2], [x1_1_p, x1_2_p], 'k')
-
-        x1_min = np.amin(x[:, 1])
-        x1_max = np.amax(x[:, 1])
-        ax.set_ylim([x1_min - 3, x1_max + 3])
+        x1_min, x1_max = np.amin(x[:, 1]) - 3, np.amax(x[:, 1]) + 3
+        ax.set_ylim([x1_min, x1_max])
 
         plt.show()
-    
+
     def accuracy(self, y_true, y_pred):
         """
-        Returns the mean accuracy on the given test data and labels.
+        Returns the mean accuracy on the given test data and y.
 
         Parameters:
         -----------
         y_true: 1d-array, shape=(n_samples,)
-            The true labels.
+            The true y.
 
         y_pred: 1d-array, shape=(n_samples,)
-            The predicted labels.
+            The predicted y.
 
         Returns:
         --------
@@ -182,10 +166,10 @@ class SVM:
         """
         accuracy = np.sum(y_true == y_pred) / len(y_true)
         return accuracy
-    
+
     def score(self, x, y):
         """
-        Returns the mean accuracy on the given test data and labels.
+        Returns the mean accuracy on the given test data and y.
 
         Parameters:
         -----------
@@ -202,9 +186,9 @@ class SVM:
         """
         pred = self.predict(x)
         return self.accuracy(y, pred)
-    
+
     def __str__(self):
         return "SVM Classifier"
-    
+
     def __repr__(self):
         return self.__str__()
