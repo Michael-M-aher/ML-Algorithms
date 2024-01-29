@@ -65,7 +65,7 @@ Please make sure to update tests as appropriate.
 
 Please ⭐️ this repository if this project helped you!
 
-[![Buy Me A Coffee](https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png)](https://www.buymeacoffee.com/your-coffee-handle)
+<a href="https://www.buymeacoffee.com/michael.maher" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="60px" width="200" ></a>
 
 ## 📝 License
 
